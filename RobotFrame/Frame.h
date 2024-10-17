@@ -20,13 +20,9 @@
 #define __FRAME_H__
 typedef void (*CallBackFunc)(void);
 typedef void (*InitFunc)(void);
-enum SelectAction{
-	Forward_LowSpeed=1,
-	Forward_HighSpeed,
-	Back_LowSpeed,
-	Back_HighSpeed,
-	Rotation,
-};
+typedef void (*Action)(void);
+
+
 void FrameEntry(void);
 void CtrlEntry(CallBackFunc CtrlMode);
 void BluetoochMode(void);

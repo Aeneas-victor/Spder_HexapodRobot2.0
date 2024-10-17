@@ -43,7 +43,9 @@
 .\objects\frame.o: ..\stm32\stm32f4xx_it.h
 .\objects\frame.o: ..\Serial\Serial.h
 .\objects\frame.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\frame.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\frame.o: ..\Robot\RobotServoController.h
 .\objects\frame.o: ..\Action\Action.h
 .\objects\frame.o: ..\Action\common.h
 .\objects\frame.o: ..\Hardware\OLED.h
+.\objects\frame.o: ..\Kinematics\Get_Angle.h

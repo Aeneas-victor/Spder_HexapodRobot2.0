@@ -20,8 +20,12 @@
 #include "stm32f4xx.h"                  // Device header
 #include "OLED_Font.h"
 #include "OLED.h"
+typedef struct Str{
+	char* str_data[6];
+	uint8_t str_size;
+}Str;
 
-
+Str oled;
 
 #define OLED_W_SCL(x) GPIO_WriteBit(OLED_GPIO_PORT,OLED_SCL_PIN,(BitAction)(x))
 #define OLED_W_SDA(x) GPIO_WriteBit(OLED_GPIO_PORT,OLED_SDA_PIN,(BitAction)(x))
@@ -286,6 +290,27 @@ void OLED_ShowBinNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Leng
 	for (i = 0; i < Length; i++)							
 	{
 		OLED_ShowChar(Line, Column + i, Number / OLED_Pow(2, Length - i - 1) % 2 + '0');
+	}
+}
+	
+void debug(char* string)
+{
+	//OLED_Clear();
+	if(oled.str_size==4)
+	{
+		for(uint8_t i=0;i<3;i++)
+		{
+			oled.str_data[i]=oled.str_data[i+1];
+		}
+	}
+	else
+	{
+		oled.str_size++;
+	}
+	oled.str_data[oled.str_size-1]=string;
+	for(uint8_t i=0;i<oled.str_size;i++)
+	{
+		OLED_ShowString(i, 1, oled.str_data[i]);
 	}
 }
 

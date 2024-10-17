@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F40_41xxx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\cmsis;..\libraries\src;..\stm32;..\user;..\libraries\inc;..\Action;..\Hardware;..\Robot;..\Serial;..\RobotFrame</IncludePath>
+              <IncludePath>..\cmsis;..\libraries\src;..\stm32;..\user;..\libraries\inc;..\Action;..\Hardware;..\Robot;..\Serial;..\RobotFrame;..\Kinematics</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -773,6 +773,21 @@
               <FileName>Frame.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\RobotFrame\Frame.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Kinematics</GroupName>
+          <Files>
+            <File>
+              <FileName>Get_Angle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Kinematics\Get_Angle.h</FilePath>
+            </File>
+            <File>
+              <FileName>Get_Angle.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Kinematics\Get_Angle.cpp</FilePath>
             </File>
           </Files>
         </Group>

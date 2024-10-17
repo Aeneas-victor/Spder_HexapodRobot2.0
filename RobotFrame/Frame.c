@@ -23,19 +23,54 @@
 #include "Delay.h"
 #include "Serial.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "RobotServoController.h"
 #include "Action.h"
 #include "OLED.h"
+#include "Get_Angle.h"
 
 extern char Serial_RxPacket[100];//数据接收包
 extern uint8_t Serial_RxFlag;//数据标志位
+
+enum SelectAction{
+	Stop=0,
+	Forward=1,
+	Retreat=2,
+	Rotation=3,
+	Speed_High=4,
+	Speed_Midium=5,
+	Speed_Low=6,
+	Posture_Midium=7,
+	Posture_Low=8,
+	Posture_High=9
+	
+}SelectAction;
+enum CtrlMode
+{
+	BlueTooch=0,
+	WiFi,
+	Hander
+}CtrlMode;
+/**
+  * @brief  action callback 函数指针枚举
+  * @param  none
+  * @retval none
+  */
+Action actionenum[10]=
+{
+	Move_Stop,Move_Advance,Move_Retreat,Move_Rotation,
+	Set_Speed_High,Set_Speed_Midium,Set_Speed_Low,
+	Set_Posture_Midium,Set_Posture_Low,Set_Posture_High
+};
 /**
   * @brief  HexapodRobot 初始化函数 包括模块的初始化函数
   * @param  Robot_Positure_Init   动作初始化函数，传入需要时初始化是表现得动作
   * @retval  none
   */
 void HexapodRobot_Init(InitFunc Robot_Positure_Init)
-{
+{ 
+#define refresh
+	OLED_Init();
 	Delay_Init();
 	Robot_Serial_Init();
 	Robot_Positure_Init();
@@ -47,10 +82,14 @@ void HexapodRobot_Init(InitFunc Robot_Positure_Init)
   */
 void FrameEntry()
 {
-	HexapodRobot_Init(Robot_Low_Action);
+	HexapodRobot_Init(Robot_Action);
+	Delay_Ms(2);
+	OLED_ShowString(1,1,"welcome");
 	while(1)
 	{
+		
 		CtrlEntry(BluetoochMode);
+		//test();
 	}
 }
 /**
@@ -61,6 +100,15 @@ void FrameEntry()
 void CtrlEntry(CallBackFunc CtrlMode)
 {
 	CtrlMode();
+}
+/**
+  * @brief  Action
+* @param  action:函数数组索引
+  * @retval  none
+  */
+void ActionCallBack(uint8_t action)
+{
+	actionenum[action]();
 }
 /**
   * @brief  蓝牙模式
@@ -75,30 +123,8 @@ void BluetoochMode(void)
 	{
 		if(Serial_RxFlag==1)
 		{
-			if(strcmp(Serial_RxPacket,"Forward_LowSpeed")==0)
-			{
-				 Move_Advance();
-			}
-			else if(strcmp(Serial_RxPacket,"Forward_LowSpeed")==0)
-			{
-				
-			}
-			else if(strcmp(Serial_RxPacket,"Back_LowSpeed")==0)
-			{
-				
-			}
-			else if(strcmp(Serial_RxPacket,"Back_HighSpeed")==0)
-			{
-				
-			}
-			else if(strcmp(Serial_RxPacket,"Rotation")==0)
-			{
-				
-			}
-			else{
-				break;
-				//返回上级目录，选择模式
-			}
+			uint8_t actnumber=atoi(Serial_RxPacket);
+			ActionCallBack(actnumber);
 		}
 	}
 }

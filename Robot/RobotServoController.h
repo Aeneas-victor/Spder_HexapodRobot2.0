@@ -2,6 +2,9 @@
 #define _ROBOTSERVOCONTROLLER_H__
 #include "stm32f4xx.h"                  // Device header
 #include "Serial.h"
+#ifdef __cplusplus
+extern "C"{
+	#endif
 typedef struct _Robot_Servo
 {
 	uint8_t ID;
@@ -29,7 +32,9 @@ void MoveServo(uint8_t servoID, int16_t Angle, uint16_t Time);
 void MoveServosByArray(RobotServo servos[], uint8_t Num, uint16_t Time);
 void moveServo(uint8_t servoID, int16_t Angle, uint16_t Time);
 void runActionGroup(uint8_t numOfAction, uint16_t Times);
-
+#ifdef __cplusplus
+}
+#endif 
 
 #endif
 

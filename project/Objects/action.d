@@ -41,3 +41,4 @@
 .\objects\action.o: ..\stm32\stm32f4xx_it.h
 .\objects\action.o: ..\Serial\Serial.h
 .\objects\action.o: ..\Robot\RobotServoController.h
+.\objects\action.o: ..\Action\Action.h

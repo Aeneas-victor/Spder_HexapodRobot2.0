@@ -98,7 +98,7 @@ void USART3_IRQHandler(void)//BLUE_USARTx串口中断服务函数
 		uint8_t RxData = USART_ReceiveData(BLUE_USARTx);//调用USART_ReceiveData()函数读取接收寄存器中的数据到变量RxData中
 		if (flag == 0)
 		{
-			if (RxData == '0' )//RxData为0，表示接收到了数据帧的起始符号
+			if (RxData == 'b' )//RxData为0，表示接收到了数据帧的起始符号
 			{
 				flag = 1;
 				pRxPacket = 0;
@@ -106,7 +106,7 @@ void USART3_IRQHandler(void)//BLUE_USARTx串口中断服务函数
 		}
 		else if (flag == 1)
 		{
-			if (RxData == '1')//如果接收到字符’1'，表示接收到了数据帧的结束符号
+			if (RxData == 'e')//如果接收到字符’1'，表示接收到了数据帧的结束符号
 			{
 				flag = 0;
 				Serial_RxPacket[pRxPacket] = '\0';//表示接收到了数据帧的终止符号，将状态切换为0，并在数据包末尾添加字符串结束符号’\0’
