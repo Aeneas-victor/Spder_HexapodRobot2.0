@@ -42,7 +42,9 @@ enum SelectAction{
 	Speed_Low=6,
 	Posture_Midium=7,
 	Posture_Low=8,
-	Posture_High=9
+	Posture_High=9,
+	Turn_Left=10,
+	Turn_Right=11
 	
 }SelectAction;
 enum CtrlMode
@@ -56,11 +58,12 @@ enum CtrlMode
   * @param  none
   * @retval none
   */
-Action actionenum[10]=
+Action actionenum[12]=
 {
 	Move_Stop,Move_Advance,Move_Retreat,Move_Rotation,
 	Set_Speed_High,Set_Speed_Midium,Set_Speed_Low,
-	Set_Posture_Midium,Set_Posture_Low,Set_Posture_High
+	Set_Posture_Midium,Set_Posture_Low,Set_Posture_High,
+	Move_Left_Turn,Move_Right_Turn
 };
 /**
   * @brief  HexapodRobot 初始化函数 包括模块的初始化函数
@@ -70,6 +73,10 @@ Action actionenum[10]=
 void HexapodRobot_Init(InitFunc Robot_Positure_Init)
 { 
 #define refresh
+	for(uint8_t i=0;i<18;i++)
+	{
+		Robot_Posture_Begin[i]=Robot_Low_Start[i];
+	}
 	OLED_Init();
 	Delay_Init();
 	Robot_Serial_Init();
@@ -135,6 +142,7 @@ void BluetoochMode(void)
   */
 void SwitchGait()
 {
+	
 	return;
 }
 

@@ -25,27 +25,48 @@
 #define SPEED_LOW 300
 
 #define FrontLeftJoint_front			-30
+#define FrontLeftJoint_rear				 80
 #define FrontRightJoint_front			 30
-#define MiddleLeftjoint_front			-60
-#define MiddleRightjoint_front			 60
-#define RearLeftjoint_front				-30
-#define RearRightjoint_front			 30
+#define FrontRightJoint_rear			-80
+
+#define MiddleLeftJoint_front			-60
+#define MiddleLeftJoint_rear 			 80
+#define MiddleRightJoint_front			 60
+#define MiddleRightJoint_rear			-80
+
+#define RearLeftJoint_front				-30
+#define RearLeftJoint_rear  			 80
+#define RearRightJoint_front			 30
+#define RearRightJoint_rear				-80
+
 #define FrontLeftLeg_UP					-60
 #define FrontRightLeg_UP				 60
 #define MiddleLeftLeg_UP				-60
 #define MiddleRightLeg_UP				 60
 #define RearLeftLeg_UP					-60
 #define RearRightLeg_UP					 60
+
 #define FrontLeftFoot_UP				 0
 #define FrontRightFoot_UP				 0
 #define MiddleLeftFoot_UP				 0
 #define MiddleRightFoot_UP				 0
 #define RearLeftFoot_UP					 0
 #define RearRightFoot_UP				 0
+
+
 extern uint16_t SPEED;
 extern const uint8_t Robot_ModuleArray[18];
+extern uint16_t Robot_Low_Start[18];
 extern uint16_t Robot_Posture_Begin[18];
 
+typedef struct Direction{
+	int16_t* LeftJointUPAngle;//左边joint 抬起角度数组
+	int16_t* LeftJointDOWNAngle;//左边joint 放下角度数组
+	int16_t* RightJointUPAngle;//右边joint 抬起角度数组
+	int16_t* RightJointDOWNAngle;//右边joint放下角度数组
+	
+}Dire;
+	
 void Robot_Action(void);
 void _Move_Robot(uint8_t* Robot_Module,uint16_t* AttitudeMode,int16_t*Angle,uint8_t number,uint16_t Time);
 void Move_Advance(void);
@@ -55,6 +76,7 @@ void Move_Left_Turn(void);
 void Move_Right_Turn(void);
 void Move_Side_Left(void);
 void Move_Side_Right(void);
+
 void Set_Posture_High(void);
 void Set_Posture_Midium(void);
 void Set_Posture_Low(void);

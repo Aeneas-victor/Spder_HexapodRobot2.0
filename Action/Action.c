@@ -1,4 +1,3 @@
-
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -28,6 +27,7 @@
 
 uint16_t SPEED=SPEED_HIGH;
 uint16_t* Robot_Posture=Robot_Posture_Begin;
+
 const uint8_t Robot_ModuleArray[18]=
 {
 	rear_Left_joint,rear_Left_leg,rear_Left_foot,
@@ -54,8 +54,7 @@ uint16_t Robot_Low_Start[18]=
 	483,662,//16，17
 	793
 };
-uint16_t Robot_Posture_Begin[18]={522,321,206,525,351,255,487,359,191,500,663,805,499,706,808,483,662,793};
-
+uint16_t Robot_Posture_Begin[18];
 uint8_t RobotjointArray[6]=//joint enum array
 {
 	rear_Left_joint,middle_Left_joint,front_Left_joint,
@@ -67,70 +66,32 @@ int16_t Rotation_Param[6]=//rotation param
 	80,80,80,80,80,80
 };
 
-uint8_t TriangleAdvanceLeft_Module[6]=//triangle advance left module
-{
-	rear_Left_joint,rear_Left_leg,middle_Right_joint,middle_Right_leg,front_Left_joint,front_Left_leg
-};
+uint8_t LeftJoint_Module[3] = {rear_Left_joint,middle_Right_joint,front_Left_joint};
+uint8_t LeftLeg_Module[3] = {rear_Left_leg,middle_Right_leg,front_Left_leg};
 
-uint8_t Left_rear_Move_Module[3]=//left rear move module 
-{
-	rear_Left_joint,middle_Right_joint,front_Left_joint
-};
+uint8_t RightJoint_Module[3] = { rear_Right_joint,middle_Left_joint,front_Right_joint };
+uint8_t RightLeg_Module[3] = { rear_Right_leg,middle_Left_leg,front_Right_leg };
 
-uint8_t Left_rear_LegMove_Module[3]=//left rear leg move module
-{
-	rear_Left_leg,middle_Right_leg,front_Left_leg
-};
+int16_t Universal_Param[3]={0,0,0};//通用leg放下 angle数组
 
-int16_t LRM_Param[3] ={80,-80,80 };
-int16_t LFM_Param[3] ={-80,80,-80};
-int16_t RRM_Param[3] ={-80,80,-80};
-int16_t RFM_Param[3] ={80,-80,80};
-int16_t Universal_Param[3]={0,0,0};
-int16_t ALU_Param[6]=//advance left up param
-{
-	-30,-60,60,60,-30,-60
-};
+int16_t LeftLegUP_Param[3]={FrontLeftLeg_UP,MiddleRightLeg_UP,RearLeftLeg_UP};
+int16_t RightLeg_UP_Param[3]={FrontRightLeg_UP,MiddleLeftLeg_UP,RearRightLeg_UP};
 
-int16_t RLU_Param[6]=//rear left up param
-{
-	30,-60,-60,60,30,-60
-};
+int16_t AdvanceLeftJointfront_Param[3]={FrontLeftJoint_front,MiddleRightJoint_front,RearLeftJoint_front};//前进 左边 joine 抬起 数组
+int16_t AdvanceLeftJointrear_Param[3]={FrontLeftJoint_rear,MiddleRightJoint_rear,RearLeftJoint_rear};
+int16_t AdvanceRightJointfront_Param[3]={FrontRightJoint_front,MiddleLeftJoint_front,RearRightJoint_front};
+int16_t AdvanceRightJointrear_Param[3]={FrontRightJoint_rear,MiddleLeftJoint_rear,RearRightJoint_rear};
 
-int16_t ALD_Param[6]=//advance left down param
-{
-	60,0,-60,0,60,0
-};
+int16_t RetreatLeftJointfront_Param[3]={FrontLeftJoint_rear,MiddleRightJoint_rear,RearLeftJoint_rear};
+int16_t RetreatLeftJointrear_Param[3]={FrontLeftJoint_front,MiddleRightJoint_front,RearLeftJoint_front};
+int16_t RetreatRightJointfront_Param[3]={FrontRightJoint_rear,MiddleLeftJoint_rear,RearRightJoint_rear};
+int16_t RetreatRightJointrear_Param[3]={FrontRightJoint_front,MiddleLeftJoint_front,RearRightJoint_front};
 
-uint8_t TriangleAdvanceRight_Module[6]=//triangle advance right module
-{
-	rear_Right_joint,rear_Right_leg,middle_Left_joint,middle_Left_leg,front_Right_joint,front_Right_leg
-};
+int16_t TurnLeftJointfront_Param[3]={FrontLeftJoint_rear,MiddleRightJoint_front,RearLeftJoint_rear};
+int16_t TurnLeftJointrear_Param[3]={FrontLeftJoint_front,MiddleRightJoint_rear,RearLeftJoint_front};
+int16_t TurnRightJointfront_Param[3]={FrontRightJoint_front,MiddleLeftJoint_rear,RearRightJoint_front};
+int16_t TurnRightJointrear_Param[3]={FrontRightJoint_rear,MiddleLeftJoint_front,RearRightJoint_rear};
 
-uint8_t Right_rear_Move_Module[3]=//right rear move module
-{
-	rear_Right_joint,middle_Left_joint,front_Right_joint
-};
-
-uint8_t Right_rear_LegMove_Module[3]=//right rear leg move module 
-{
-	rear_Right_leg,middle_Left_leg,front_Right_leg
-};
-
-int16_t ARU_Param[6]=//advance right up param
-{
-	30,60,-60,-60,30,60
-};
-
-int16_t RRU_Param[6]=//rear right up param
-{
-	-30,60,60,-60,-30,60
-};
-
-int16_t ARD_Param[6]=//advance right down param
-{
-	-60,0,60,0,-60,0
-};
 
 /**
   * @brief  Robot_Low_Action
@@ -154,13 +115,34 @@ void Robot_Action(void)
 * @param number:移动舵机个数
   * @retval  none
   */
-
 void _Move_Robot(uint8_t* Robot_Module,uint16_t* AttitudeMode,int16_t*Angle,uint8_t number,uint16_t Time)
 {
 	for(uint8_t i=0;i<number;i++)
 	{
 		MoveServo(Robot_Module[i],(uint16_t)(AttitudeMode[Robot_Module[i]-1]+Angle[i]),Time);
 	}
+}
+/**
+  * @brief  Move run logic
+  * @param  dire 存放行动参数结构体
+  * @retval  none
+  */
+void Move_Logic(Dire* dire)
+{
+	_Move_Robot(LeftJoint_Module,Robot_Posture,dire->LeftJointUPAngle,3,SPEED);//左边joint运行
+	_Move_Robot(LeftLeg_Module,Robot_Posture,LeftLegUP_Param,3,SPEED);//左边leg抬起
+	Delay_Ms(SPEED+1);
+	_Move_Robot(RightJoint_Module,Robot_Posture,dire->RightJointDOWNAngle,3,SPEED);//右边joint放下
+	Delay_Ms(SPEED);
+	_Move_Robot(LeftLeg_Module,Robot_Posture,Universal_Param,3,SPEED);//左边leg放下
+	
+	_Move_Robot(LeftJoint_Module,Robot_Posture,dire->LeftJointDOWNAngle,3,SPEED);//左边joint放下
+	_Move_Robot(RightLeg_Module,Robot_Posture,RightLeg_UP_Param,3,SPEED);//右边leg抬起
+	Delay_Ms(SPEED+1);
+	_Move_Robot(RightJoint_Module,Robot_Posture,dire->RightJointUPAngle,3,SPEED);//右边joint运行
+	Delay_Ms(SPEED);
+	_Move_Robot(RightLeg_Module,Robot_Posture,Universal_Param,3,SPEED);//右边leg放下
+	Delay_Ms(10);
 }
 
 /**
@@ -171,18 +153,14 @@ void _Move_Robot(uint8_t* Robot_Module,uint16_t* AttitudeMode,int16_t*Angle,uint
 
 void Move_Advance(void)
 {	
-	_Move_Robot(TriangleAdvanceLeft_Module,Robot_Posture,ALU_Param,6,SPEED);//left leg up
-	Delay_Ms(SPEED+2);
-	_Move_Robot(Right_rear_Move_Module,Robot_Posture,RRM_Param,3,SPEED);
-	Delay_Ms(SPEED);
-	_Move_Robot(Left_rear_LegMove_Module,Robot_Posture,Universal_Param,3,SPEED);
-	_Move_Robot(TriangleAdvanceRight_Module,Robot_Posture,ARU_Param,6,SPEED);
-	Delay_Ms(SPEED+2);
-	_Move_Robot(Left_rear_Move_Module,Robot_Posture,LRM_Param,3,SPEED);
-	Delay_Ms(SPEED);
-	_Move_Robot(Right_rear_LegMove_Module,Robot_Posture,Universal_Param,3,SPEED);
-	Delay_Ms(20);
+	Dire _dire;
+	_dire.LeftJointUPAngle=AdvanceLeftJointfront_Param;
+	_dire.LeftJointDOWNAngle=AdvanceLeftJointrear_Param;
+	_dire.RightJointUPAngle=AdvanceRightJointfront_Param;
+	_dire.RightJointDOWNAngle=AdvanceRightJointrear_Param;
+	Move_Logic(&_dire);
 }
+
 /**
   * @brief  move Retreat function
   * @param  void
@@ -191,19 +169,12 @@ void Move_Advance(void)
 
 void Move_Retreat(void)
 {
-	
-	_Move_Robot(TriangleAdvanceLeft_Module,Robot_Posture,RLU_Param,6,SPEED);
-	Delay_Ms(SPEED+2);
-	_Move_Robot(Right_rear_Move_Module,Robot_Posture,RFM_Param,3,SPEED);
-	Delay_Ms(SPEED);
-	_Move_Robot(Left_rear_LegMove_Module,Robot_Posture,Universal_Param,3,SPEED);
-	_Move_Robot(TriangleAdvanceRight_Module,Robot_Posture, RRU_Param,6,SPEED);
-	Delay_Ms(SPEED+2);
-	_Move_Robot(Left_rear_Move_Module,Robot_Posture, LFM_Param,3,SPEED);
-	Delay_Ms(SPEED);
-	_Move_Robot(Right_rear_LegMove_Module,Robot_Posture,Universal_Param,3,SPEED);
-	Delay_Ms(20);
-	
+	Dire _dire;
+	_dire.LeftJointUPAngle=RetreatLeftJointfront_Param;
+	_dire.LeftJointDOWNAngle=RetreatLeftJointrear_Param;
+	_dire.RightJointUPAngle=RetreatRightJointfront_Param;
+	_dire.RightJointDOWNAngle=RetreatRightJointrear_Param;
+	Move_Logic(&_dire);
 }
 
 /**
@@ -214,7 +185,12 @@ void Move_Retreat(void)
 
 void Move_Left_Turn(void)
 {
-	_Move_Robot(TriangleAdvanceLeft_Module,Robot_Posture,)
+	Dire _dire;
+	_dire.LeftJointUPAngle=TurnLeftJointfront_Param;
+	_dire.LeftJointDOWNAngle=TurnLeftJointrear_Param;
+	_dire.RightJointUPAngle=TurnRightJointfront_Param;
+	_dire.RightJointDOWNAngle=TurnRightJointrear_Param;
+	Move_Logic(&_dire);
 }
 
 /**
@@ -224,7 +200,12 @@ void Move_Left_Turn(void)
   */
 void Move_Right_Turn(void)
 {
-	
+	Dire _dire;
+	_dire.LeftJointUPAngle=TurnLeftJointrear_Param;
+	_dire.LeftJointDOWNAngle=TurnLeftJointfront_Param;
+	_dire.RightJointUPAngle=TurnRightJointrear_Param;
+	_dire.RightJointDOWNAngle=TurnRightJointfront_Param;
+	Move_Logic(&_dire);
 }
 /**
   * @brief  side move left
@@ -276,7 +257,7 @@ void Set_Posture_High(void){
 		else continue;
 	}
 	Move_Stop();
-	Delay_Ms(200);
+	Delay_Ms(SPEED);
 }
 void Set_Posture_Midium(void){
 	for(uint8_t i=1;i<19;i++)
@@ -286,12 +267,12 @@ void Set_Posture_Midium(void){
 		else continue;
 	}
 	Move_Stop();
-	Delay_Ms(200);
+	Delay_Ms(SPEED);
 }
 void Set_Posture_Low(void){
 	for(uint8_t i=0;i<18;i++)
 	{Robot_Posture_Begin[i]=Robot_Low_Start[i];}
-	Move_Stop();Delay_Ms(200);
+	Move_Stop();Delay_Ms(SPEED);
 }		
 void Set_Speed_High(void){SPEED=SPEED_HIGH;}
 void Set_Speed_Midium(void){SPEED=SPEED_MIDIUM;}
@@ -306,17 +287,3 @@ void Move_Stop(void)
 	Delay_Ms(200);
 	Robot_Action();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
